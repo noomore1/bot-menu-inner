@@ -13,8 +13,6 @@ from telegram.ext import (
     filters
 )
 
-from aiohttp import web
-
 # Для корректной работы в Jupyter/nested loops
 nest_asyncio.apply()
 
@@ -373,7 +371,8 @@ async def show_shopping_list(update: Update, context: ContextTypes.DEFAULT_TYPE)
             "🛒 Для этого завтрака список ингредиентов пока не указан."
         )
 
-import os
+from telegram.ext import ApplicationBuilder
+from aiohttp import web
 
 BOT_TOKEN = "8122015182:AAGcVNiLbj6ZK1uNwcfIh3NRZ-w61zoVQHA"
 PORT = int(os.environ.get('PORT', 8443))
@@ -384,10 +383,10 @@ WEBHOOK_URL = f"https://bot-menu-inner.onrender.com{WEBHOOK_PATH}"
 async def healthcheck(request):
     return web.Response(text="OK")
 
-# Точка входа
 async def main():
-    app = ApplicationBuilder().token(BOT_TOKEN).web_app(True).build()
+    app = ApplicationBuilder().token(BOT_TOKEN).build()
 
+    # Регистрируем ConversationHandler (если у тебя уже создан — просто вставь его сюда)
     conv = ConversationHandler(
         entry_points=[
             CommandHandler("start", start),
@@ -408,21 +407,17 @@ async def main():
         fallbacks=[CommandHandler("start", start)]
     )
     app.add_handler(conv)
-    app._web_app.router.add_get("/", healthcheck)
 
-    print("✅ Бот запущен через Webhook")
+    # 👇 добавим эндпоинт для Render
+    app.web_app.router.add_get("/", healthcheck)
 
-    # 👇 Установка Webhook вручную
-    await app.bot.set_webhook(WEBHOOK_URL)
+    print("✅ Bot is running via Webhook...")
 
-    # 👇 Добавили хелсчек
-    app._web_app.router.add_get("/", healthcheck)
-
-    # 👇 Запуск бота через Webhook
     await app.run_webhook(
         listen="0.0.0.0",
         port=PORT,
-        url_path="webhook",  # без слеша в начале
+        url_path=WEBHOOK_PATH,
+        webhook_url=WEBHOOK_URL
     )
 
 if __name__ == "__main__":
