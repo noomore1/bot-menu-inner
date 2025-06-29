@@ -386,7 +386,10 @@ async def healthcheck(request):
     return web.Response(text="OK")
 
 async def main():
-    app = ApplicationBuilder().token(BOT_TOKEN).web_app(True).build()
+    app = ApplicationBuilder().token(BOT_TOKEN).build()
+
+    # ✅ Вывод версии PTB
+    print(f"PTB version: {telegram.__version__}")
 
     # Регистрируем ConversationHandler (если у тебя уже создан — просто вставь его сюда)
     conv = ConversationHandler(
