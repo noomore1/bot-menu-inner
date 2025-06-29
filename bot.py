@@ -409,9 +409,10 @@ async def run():
     application = ApplicationBuilder().token(BOT_TOKEN).build()
     application.add_handler(conv)
 
-    # Создаем aiohttp сервер
+    # Create aiohttp web server and bind Telegram webhook handler
     app = web.Application()
-    app.router.add_post(WEBHOOK_PATH, lambda request: application._request_handler(request))
+    handler = WebhookRequestHandler(application)
+    app.router.add_post(WEBHOOK_PATH, handler.handle)
     app.router.add_get("/", healthcheck)
 
     # Устанавливаем вебхук
