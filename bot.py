@@ -13,8 +13,6 @@ from telegram.ext import (
     filters
 )
 
-from telegram.ext.webhook import WebhookRequestHandler
-
 # Для корректной работы в Jupyter/nested loops
 nest_asyncio.apply()
 
@@ -413,8 +411,7 @@ async def run():
 
     # Create aiohttp web server and bind Telegram webhook handler
     app = web.Application()
-    handler = WebhookRequestHandler(application)
-    app.router.add_post(WEBHOOK_PATH, handler.handle)
+    app.router.add_post(WEBHOOK_PATH, application._request_handler)
     app.router.add_get("/", healthcheck)
 
     # Устанавливаем вебхук
