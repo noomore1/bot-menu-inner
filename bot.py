@@ -13,7 +13,7 @@ from telegram.ext import (
     filters
 )
 
-from telegram.ext.webhookhandler import WebhookRequestHandler
+from telegram.ext.webhook import WebhookRequestHandler
 
 # Для корректной работы в Jupyter/nested loops
 nest_asyncio.apply()
