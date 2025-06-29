@@ -380,6 +380,10 @@ PORT = int(os.environ.get('PORT', 8443))
 WEBHOOK_PATH = "/webhook"
 WEBHOOK_URL = f"https://bot-menu-inner.onrender.com{WEBHOOK_PATH}"
 
+# Healthcheck для Render
+async def healthcheck(request):
+    return web.Response(text="OK")
+
 # Точка входа
 async def main():
     app = ApplicationBuilder().token(BOT_TOKEN).build()
@@ -409,6 +413,9 @@ async def main():
 
     # 👇 Установка Webhook вручную
     await app.bot.set_webhook(WEBHOOK_URL)
+
+    # 👇 Добавили хелсчек
+    app._web_app.router.add_get("/", healthcheck)
 
     # 👇 Запуск бота через Webhook
     await app.run_webhook(
