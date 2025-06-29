@@ -386,7 +386,7 @@ async def healthcheck(request):
     return web.Response(text="OK")
 
 async def main():
-    app = ApplicationBuilder().token(BOT_TOKEN).build()
+    app = ApplicationBuilder().token(BOT_TOKEN).web_app(True).build()
 
     # Регистрируем ConversationHandler (если у тебя уже создан — просто вставь его сюда)
     conv = ConversationHandler(
