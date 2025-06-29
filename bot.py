@@ -371,6 +371,8 @@ async def show_shopping_list(update: Update, context: ContextTypes.DEFAULT_TYPE)
             "🛒 Для этого завтрака список ингредиентов пока не указан."
         )
 
+import os
+
 from telegram.ext import ApplicationBuilder
 from aiohttp import web
 
