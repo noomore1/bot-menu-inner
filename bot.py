@@ -183,6 +183,8 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     return STATE_START
 
 async def lunch_confirm(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if not update.message or not update.message.text:
+        return
     text = update.message.text
     if text == "Да":
         context.user_data['lunch'] = "Вот это повезло! Обед уже есть!"
@@ -192,6 +194,8 @@ async def lunch_confirm(update: Update, context: ContextTypes.DEFAULT_TYPE):
     return STATE_DINNER_CONFIRM
 
 async def dinner_confirm(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if not update.message or not update.message.text:
+        return
     text = update.message.text
     lunch = context.user_data.get("lunch")
     all_meals = LIGHT_MEALS + HEARTY_MEALS
@@ -204,6 +208,8 @@ async def dinner_confirm(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 # Обработка главного меню
 async def action_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if not update.message or not update.message.text:
+        return
     text = update.message.text
     if text == "🚀 Запустить бота":
         return await start(update, context)
@@ -237,6 +243,8 @@ async def action_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 # Завтрак
 async def breakfast_type(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if not update.message or not update.message.text:
+        return
     text = update.message.text
     if text == "🔙 Назад":
         await update.message.reply_text("Что выберешь сегодня?", reply_markup=kb_main())
@@ -257,6 +265,8 @@ async def breakfast_type(update: Update, context: ContextTypes.DEFAULT_TYPE):
     return STATE_BREAKFAST
 
 async def breakfast_chosen(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if not update.message or not update.message.text:
+        return
     if update.message.text == "🔙 Назад":
         await update.message.reply_text("Выбери тип завтрака:", reply_markup=kb_breakfast_type())
         return STATE_BREAKFAST_TYPE
@@ -266,6 +276,8 @@ async def breakfast_chosen(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 # Обед
 async def lunch_type(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if not update.message or not update.message.text:
+        return
     text = update.message.text
     if text == "🔙 Назад":
         await update.message.reply_text("Выбери завтрак:", reply_markup=kb_breakfast_type())
@@ -290,6 +302,8 @@ async def lunch_type(update: Update, context: ContextTypes.DEFAULT_TYPE):
     return STATE_LUNCH_CHOICE
 
 async def lunch_chosen(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if not update.message or not update.message.text:
+        return
     if update.message.text == "🔙 Назад":
         await update.message.reply_text("Выбери тип обеда:", reply_markup=kb_lunch_type())
         return STATE_LUNCH_TYPE
@@ -299,6 +313,8 @@ async def lunch_chosen(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 # Ужин
 async def dinner_type(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if not update.message or not update.message.text:
+        return
     text = update.message.text
     if text == "🔙 Назад":
         await update.message.reply_text("Выбери тип обеда:", reply_markup=kb_lunch_type())
@@ -321,6 +337,8 @@ async def dinner_type(update: Update, context: ContextTypes.DEFAULT_TYPE):
     return STATE_DINNER_CHOICE
 
 async def dinner_chosen(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if not update.message or not update.message.text:
+        return
     if update.message.text == "🔙 Назад":
         await update.message.reply_text("Выбери тип ужина:", reply_markup=kb_dinner_type())
         return STATE_DINNER_TYPE
@@ -373,16 +391,16 @@ async def run():
             MessageHandler(filters.Regex("^🚀 Запустить бота$"), start)
         ],
         states={
-            STATE_START: [MessageHandler(filters.TEXT, action_handler)],
-            STATE_ACTION: [MessageHandler(filters.TEXT, action_handler)],
-            STATE_BREAKFAST_TYPE: [MessageHandler(filters.TEXT, breakfast_type)],
-            STATE_BREAKFAST: [MessageHandler(filters.TEXT, breakfast_chosen)],
-            STATE_LUNCH_TYPE: [MessageHandler(filters.TEXT, lunch_type)],
-            STATE_LUNCH_CHOICE: [MessageHandler(filters.TEXT, lunch_chosen)],
-            STATE_DINNER_TYPE: [MessageHandler(filters.TEXT, dinner_type)],
-            STATE_DINNER_CHOICE: [MessageHandler(filters.TEXT, dinner_chosen)],
-            STATE_LUNCH_CONFIRM: [MessageHandler(filters.TEXT, lunch_confirm)],
-            STATE_DINNER_CONFIRM: [MessageHandler(filters.TEXT, dinner_confirm)],
+            STATE_START: [MessageHandler(filters.ALL, action_handler)],
+            STATE_ACTION: [MessageHandler(filters.ALL, action_handler)],
+            STATE_BREAKFAST_TYPE: [MessageHandler(filters.ALL, breakfast_type)],
+            STATE_BREAKFAST: [MessageHandler(filters.ALL, breakfast_chosen)],
+            STATE_LUNCH_TYPE: [MessageHandler(filters.ALL, lunch_type)],
+            STATE_LUNCH_CHOICE: [MessageHandler(filters.ALL, lunch_chosen)],
+            STATE_DINNER_TYPE: [MessageHandler(filters.ALL, dinner_type)],
+            STATE_DINNER_CHOICE: [MessageHandler(filters.ALL, dinner_chosen)],
+            STATE_LUNCH_CONFIRM: [MessageHandler(filters.ALL, lunch_confirm)],
+            STATE_DINNER_CONFIRM: [MessageHandler(filters.ALL, dinner_confirm)],
         },
         fallbacks=[CommandHandler("start", start)]
     )
