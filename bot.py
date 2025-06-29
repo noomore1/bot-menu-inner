@@ -149,30 +149,6 @@ def kb_action():
 
 def kb_breakfast_type():
     return ReplyKeyboardMarkup(
-        [["Сладкий завтрак", "Солёный завтрак"], ["Случайный завтрак"]],
-        resize_keyboard=True, one_time_keyboard=True
-    )
-
-def kb_lunch_type():
-    return ReplyKeyboardMarkup(
-        [["Лёгкий обед", "Сытный обед"], ["Случайный обед"], ["У меня есть обед"]],
-        resize_keyboard=True, one_time_keyboard=True
-    )
-
-def kb_dinner_type():
-    return ReplyKeyboardMarkup(
-        [["Лёгкий ужин", "Сытный ужин"], ["Случайный ужин"], ["У меня есть ужин"]],
-        resize_keyboard=True, one_time_keyboard=True
-    )
-
-def kb_confirm():
-    return ReplyKeyboardMarkup(
-        [["Да", "Нет"]],
-        resize_keyboard=True, one_time_keyboard=True
-    )
-
-def kb_breakfast_type():
-    return ReplyKeyboardMarkup(
         [["Сладкий завтрак", "Солёный завтрак"], ["Случайный завтрак"], ["🔙 Назад"]],
         resize_keyboard=True, one_time_keyboard=True
     )
@@ -186,6 +162,12 @@ def kb_lunch_type():
 def kb_dinner_type():
     return ReplyKeyboardMarkup(
         [["Лёгкий ужин", "Сытный ужин"], ["Случайный ужин"], ["У меня есть ужин"], ["🔙 Назад"]],
+        resize_keyboard=True, one_time_keyboard=True
+    )
+
+def kb_confirm():
+    return ReplyKeyboardMarkup(
+        [["Да", "Нет"]],
         resize_keyboard=True, one_time_keyboard=True
     )
 
