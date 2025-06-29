@@ -372,11 +372,10 @@ async def show_shopping_list(update: Update, context: ContextTypes.DEFAULT_TYPE)
         )
 
 import os
-
-from telegram.ext import ApplicationBuilder
 from aiohttp import web
 
-BOT_TOKEN = "8122015182:AAGcVNiLbj6ZK1uNwcfIh3NRZ-w61zoVQHA"
+# Параметры для Render
+BOT_TOKEN = os.getenv("BOT_TOKEN", "8122015182:AAGcVNiLbj6ZK1uNwcfIh3NRZ-w61zoVQHA")
 PORT = int(os.environ.get('PORT', 8443))
 WEBHOOK_PATH = "/webhook"
 WEBHOOK_URL = f"https://bot-menu-inner.onrender.com{WEBHOOK_PATH}"
@@ -385,13 +384,8 @@ WEBHOOK_URL = f"https://bot-menu-inner.onrender.com{WEBHOOK_PATH}"
 async def healthcheck(request):
     return web.Response(text="OK")
 
-async def main():
-    app = ApplicationBuilder().token(BOT_TOKEN).build()
-
-    # ✅ Вывод версии PTB
-    print(f"PTB version: {telegram.__version__}")
-
-    # Регистрируем ConversationHandler (если у тебя уже создан — просто вставь его сюда)
+async def run():
+    # ✅ Создаем ConvHandler ДО добавления его в Application
     conv = ConversationHandler(
         entry_points=[
             CommandHandler("start", start),
@@ -411,20 +405,25 @@ async def main():
         },
         fallbacks=[CommandHandler("start", start)]
     )
-    app.add_handler(conv)
 
-    # 👇 добавим эндпоинт для Render
-    app.web_app.router.add_get("/", healthcheck)
+    application = ApplicationBuilder().token(BOT_TOKEN).build()
+    application.add_handler(conv)
 
+    # Создаем aiohttp сервер
+    app = web.Application()
+    app.router.add_post(WEBHOOK_PATH, application.webhook_handler())
+    app.router.add_get("/", healthcheck)
+
+    # Устанавливаем вебхук
+    await application.bot.set_webhook(WEBHOOK_URL)
     print("✅ Bot is running via Webhook...")
 
-    await app.run_webhook(
-        listen="0.0.0.0",
-        port=PORT,
-        url_path=WEBHOOK_PATH,
-        webhook_url=WEBHOOK_URL
-    )
+    # Запускаем сервер
+    runner = web.AppRunner(app)
+    await runner.setup()
+    site = web.TCPSite(runner, "0.0.0.0", PORT)
+    await site.start()
 
 if __name__ == "__main__":
-    import asyncio
-    asyncio.run(main())
+    nest_asyncio.apply()
+    asyncio.run(run())
