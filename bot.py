@@ -13,6 +13,8 @@ from telegram.ext import (
     filters
 )
 
+from aiohttp import web
+
 # Для корректной работы в Jupyter/nested loops
 nest_asyncio.apply()
 
@@ -372,11 +374,17 @@ async def show_shopping_list(update: Update, context: ContextTypes.DEFAULT_TYPE)
         )
 
 import os
-from telegram.ext import ApplicationBuilder
+from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, ConversationHandler, filters
+from aiohttp import web
 
 BOT_TOKEN = "8122015182:AAGcVNiLbj6ZK1uNwcfIh3NRZ-w61zoVQHA"
 PORT = int(os.environ.get('PORT', 8443))
-WEBHOOK_URL = f"https://bot-menu-inner.onrender.com/webhook"
+WEBHOOK_PATH = "/webhook"
+WEBHOOK_URL = f"https://bot-menu-inner.onrender.com{WEBHOOK_PATH}"
+
+# Healthcheck для Render
+async def healthcheck(request):
+    return web.Response(text="OK")
 
 # Точка входа
 async def main():
@@ -405,4 +413,19 @@ async def main():
 
     print("✅ Бот запущен через Webhook")
 
-    # Установка Webhook
+    # 👇 Healthcheck для Render
+    app._web_app.router.add_get("/", healthcheck)
+
+    # 👇 Установка Webhook вручную
+    await app.bot.set_webhook(WEBHOOK_URL)
+
+    # 👇 Запуск бота через Webhook
+    await app.run_webhook(
+        listen="0.0.0.0",
+        port=PORT,
+        url_path=WEBHOOK_PATH
+    )
+
+if __name__ == "__main__":
+    import asyncio
+    asyncio.run(main())
