@@ -411,7 +411,7 @@ async def run():
 
     # Создаем aiohttp сервер
     app = web.Application()
-    app.router.add_post(WEBHOOK_PATH, application.webhook_handler())
+    app.router.add_post(WEBHOOK_PATH, lambda request: application._request_handler(request))
     app.router.add_get("/", healthcheck)
 
     # Устанавливаем вебхук
