@@ -377,6 +377,7 @@ import os
 
 BOT_TOKEN = "8122015182:AAGcVNiLbj6ZK1uNwcfIh3NRZ-w61zoVQHA"
 PORT = int(os.environ.get('PORT', 8443))
+WEBHOOK_PATH = "/webhook"
 WEBHOOK_URL = f"https://bot-menu-inner.onrender.com{WEBHOOK_PATH}"
 
 # Точка входа
