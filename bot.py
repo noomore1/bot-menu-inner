@@ -376,7 +376,7 @@ from aiohttp import web
 
 # Параметры для Render
 BOT_TOKEN = os.getenv("BOT_TOKEN", "8122015182:AAGcVNiLbj6ZK1uNwcfIh3NRZ-w61zoVQHA")
-PORT = int(os.environ.get('PORT', 8443))
+PORT = int(os.environ.get("PORT", 8443))
 WEBHOOK_PATH = "/webhook"
 WEBHOOK_URL = f"https://bot-menu-inner.onrender.com{WEBHOOK_PATH}"
 
@@ -384,7 +384,8 @@ WEBHOOK_URL = f"https://bot-menu-inner.onrender.com{WEBHOOK_PATH}"
 async def healthcheck(request):
     return web.Response(text="OK")
 
-async def handle_webhook(request):
+async def handle_webhook(request: web.Request) -> web.Response:
+    print("📩 Webhook received!")
     data = await request.json()
     update = Update.de_json(data, application.bot)
     await application.process_update(update)
