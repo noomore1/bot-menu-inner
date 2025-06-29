@@ -423,6 +423,7 @@ async def run():
     await runner.setup()
     site = web.TCPSite(runner, "0.0.0.0", PORT)
     await site.start()
+    print(f"✅ Web server is up and listening on http://0.0.0.0:{PORT}")
 
 if __name__ == "__main__":
     nest_asyncio.apply()
