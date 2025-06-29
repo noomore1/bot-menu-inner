@@ -386,7 +386,7 @@ async def healthcheck(request):
 
 # Точка входа
 async def main():
-    app = ApplicationBuilder().token(BOT_TOKEN).build()
+    app = ApplicationBuilder().token(BOT_TOKEN).web_app(True).build()
 
     conv = ConversationHandler(
         entry_points=[
@@ -408,6 +408,7 @@ async def main():
         fallbacks=[CommandHandler("start", start)]
     )
     app.add_handler(conv)
+    app._web_app.router.add_get("/", healthcheck)
 
     print("✅ Бот запущен через Webhook")
 
