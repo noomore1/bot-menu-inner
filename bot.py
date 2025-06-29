@@ -420,7 +420,8 @@ async def run():
     app.router.add_post(WEBHOOK_PATH, handle_webhook)
     app.router.add_get("/", healthcheck)
 
-    await application.initialize()
+    await application.initialize()   # Обязательная инициализация
+    await application.start()        # Запуск polling или webhook-обработки
     await application.bot.set_webhook(WEBHOOK_URL)
     print("✅ Webhook установлен")
 
