@@ -384,13 +384,6 @@ WEBHOOK_URL = f"https://bot-menu-inner.onrender.com{WEBHOOK_PATH}"
 async def healthcheck(request):
     return web.Response(text="OK")
 
-async def handle_webhook(request: web.Request) -> web.Response:
-    print("📩 Webhook received!")
-    data = await request.json()
-    update = Update.de_json(data, application.bot)
-    await application.process_update(update)
-    return web.Response(text="OK")
-
 async def run():
     # ✅ Создаем ConvHandler ДО добавления его в Application
     conv = ConversationHandler(
@@ -418,7 +411,7 @@ async def run():
 
     # Создаем aiohttp сервер
     app = web.Application()
-    app.router.add_post(WEBHOOK_PATH, handle_webhook)
+    app.router.add_post(WEBHOOK_PATH, application.webhook_handler())
     app.router.add_get("/", healthcheck)
 
     # Устанавливаем вебхук
