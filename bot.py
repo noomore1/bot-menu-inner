@@ -385,7 +385,6 @@ async def healthcheck(request):
     return web.Response(text="OK")
 
 async def run():
-    # ✅ Создаем ConvHandler ДО добавления его в Application
     conv = ConversationHandler(
         entry_points=[
             CommandHandler("start", start),
@@ -409,22 +408,27 @@ async def run():
     application = ApplicationBuilder().token(BOT_TOKEN).build()
     application.add_handler(conv)
 
-    # Create aiohttp web server and bind Telegram webhook handler
+    # Новый handler вместо _request_handler
+    async def handle_webhook(request):
+        data = await request.json()
+        update = Update.de_json(data, application.bot)
+        await application.process_update(update)
+        return web.Response(text="OK")
+
+    # Web server
     app = web.Application()
-    app.router.add_post(WEBHOOK_PATH, application._request_handler)
+    app.router.add_post(WEBHOOK_PATH, handle_webhook)
     app.router.add_get("/", healthcheck)
 
-    # Устанавливаем вебхук
     await application.bot.set_webhook(WEBHOOK_URL)
-    print("✅ Bot is running via Webhook...")
+    print("✅ Webhook установлен")
 
-    # Запускаем сервер
     runner = web.AppRunner(app)
     await runner.setup()
     site = web.TCPSite(runner, "0.0.0.0", PORT)
     await site.start()
-    print(f"✅ Web server is up and listening on http://0.0.0.0:{PORT}")
-     # Ждём бесконечно, чтобы не выйти из run()
+    print(f"✅ Web server listening at http://0.0.0.0:{PORT}")
+
     await asyncio.Event().wait()
     
 if __name__ == "__main__":
