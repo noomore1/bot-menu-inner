@@ -371,14 +371,22 @@ async def show_shopping_list(update: Update, context: ContextTypes.DEFAULT_TYPE)
             "🛒 Для этого завтрака список ингредиентов пока не указан."
         )
 
+import os
+
+BOT_TOKEN = "8122015182:AAGcVNiLbj6ZK1uNwcfIh3NRZ-w61zoVQHA"
+PORT = int(os.environ.get('PORT', 8443))
+WEBHOOK_PATH = f"/{BOT_TOKEN}"
+WEBHOOK_URL = f"https://bot-menu-inner.onrender.com{WEBHOOK_PATH}"
+
 # Точка входа
 async def main():
-    app = ApplicationBuilder().token("8122015182:AAGcVNiLbj6ZK1uNwcfIh3NRZ-w61zoVQHA").build()
+    app = ApplicationBuilder().token(BOT_TOKEN).build()
+
     conv = ConversationHandler(
         entry_points=[
             CommandHandler("start", start),
             MessageHandler(filters.Regex("^🚀 Запустить бота$"), start)
-            ],
+        ],
         states={
             STATE_START: [MessageHandler(filters.TEXT, action_handler)],
             STATE_ACTION: [MessageHandler(filters.TEXT, action_handler)],
@@ -394,8 +402,16 @@ async def main():
         fallbacks=[CommandHandler("start", start)]
     )
     app.add_handler(conv)
-    print("✅ Бот запущен")
-    await app.run_polling()
+
+    print("✅ Бот запущен через Webhook")
+
+    await app.run_webhook(
+        listen="0.0.0.0",
+        port=PORT,
+        webhook_path=WEBHOOK_PATH,
+        webhook_url=WEBHOOK_URL
+    )
 
 if __name__ == '__main__':
+    import asyncio
     asyncio.run(main())
