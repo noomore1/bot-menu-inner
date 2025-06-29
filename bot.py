@@ -431,7 +431,9 @@ async def run():
     site = web.TCPSite(runner, "0.0.0.0", PORT)
     await site.start()
     print(f"✅ Web server is up and listening on http://0.0.0.0:{PORT}")
-
+     # Ждём бесконечно, чтобы не выйти из run()
+    await asyncio.Event().wait()
+    
 if __name__ == "__main__":
     nest_asyncio.apply()
     asyncio.run(run())
