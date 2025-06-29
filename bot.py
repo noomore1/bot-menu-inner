@@ -374,17 +374,10 @@ async def show_shopping_list(update: Update, context: ContextTypes.DEFAULT_TYPE)
         )
 
 import os
-from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, ConversationHandler, filters
-from aiohttp import web
 
 BOT_TOKEN = "8122015182:AAGcVNiLbj6ZK1uNwcfIh3NRZ-w61zoVQHA"
 PORT = int(os.environ.get('PORT', 8443))
-WEBHOOK_PATH = "/webhook"
 WEBHOOK_URL = f"https://bot-menu-inner.onrender.com{WEBHOOK_PATH}"
-
-# Healthcheck для Render
-async def healthcheck(request):
-    return web.Response(text="OK")
 
 # Точка входа
 async def main():
@@ -420,7 +413,7 @@ async def main():
     await app.run_webhook(
         listen="0.0.0.0",
         port=PORT,
-        url_path=WEBHOOK_PATH
+        url_path="webhook",  # без слеша в начале
     )
 
 if __name__ == "__main__":
