@@ -372,11 +372,11 @@ async def show_shopping_list(update: Update, context: ContextTypes.DEFAULT_TYPE)
         )
 
 import os
+from telegram.ext import ApplicationBuilder
 
 BOT_TOKEN = "8122015182:AAGcVNiLbj6ZK1uNwcfIh3NRZ-w61zoVQHA"
 PORT = int(os.environ.get('PORT', 8443))
-WEBHOOK_PATH = f"/{BOT_TOKEN}"
-WEBHOOK_URL = f"https://bot-menu-inner.onrender.com{WEBHOOK_PATH}"
+WEBHOOK_URL = f"https://bot-menu-inner.onrender.com/webhook"
 
 # Точка входа
 async def main():
@@ -405,13 +405,4 @@ async def main():
 
     print("✅ Бот запущен через Webhook")
 
-    await app.run_webhook(
-        listen="0.0.0.0",
-        port=PORT,
-        webhook_path=WEBHOOK_PATH,
-        webhook_url=WEBHOOK_URL
-    )
-
-if __name__ == '__main__':
-    import asyncio
-    asyncio.run(main())
+    # Установка Webhook
