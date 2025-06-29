@@ -137,7 +137,7 @@ BREAKFAST_INGREDIENTS = {
 # Клавиатуры
 def kb_main():
     return ReplyKeyboardMarkup(
-        [["🚀 Запустить бота", "Меню на день 🍽", "Кофейня ☕️"], ["🔁 Начать заново"]],
+        ["🚀 Запустить бота", "Меню на день 🍽", "Кофейня ☕️"],
         resize_keyboard=True, one_time_keyboard=True
     )
 
@@ -223,8 +223,6 @@ async def dinner_confirm(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # Обработка главного меню
 async def action_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     text = update.message.text
-    if text == "🔁 Начать заново":
-        return await start(update, context)
     if text == "🚀 Запустить бота":
         return await start(update, context)
     if text == "Кофейня ☕️":
