@@ -413,9 +413,6 @@ async def main():
 
     print("✅ Бот запущен через Webhook")
 
-    # 👇 Healthcheck для Render
-    app._web_app.router.add_get("/", healthcheck)
-
     # 👇 Установка Webhook вручную
     await app.bot.set_webhook(WEBHOOK_URL)
 
